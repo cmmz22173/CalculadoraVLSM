@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="styles/modelos.css">
+    <title>Calculadora en linea </title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+
+</head>
+
+<body>
+<div class="card" id="cintaVerde"><label id="titulo">Calculadora VLSM IPV4</label></div>
+
+        <div class="card" id="caja1">
+            <label for="inputIP" id="dirIP">Direccion IP</label>
+            <label for="inputMask" id="dirMask">Mascara</label>
+            <label id="actualRed">Red</label>
+            <label id="numeroHost">Hosts</label>
+            <label id="actualMask">Mascara actual</label>
+            <label id="actualDecimalMask">Decimal</label>
+            <label id="actualHexadecimalMask">Hexadecimal</label>
+            <label id="actualBinaryMask">Binario</label>
+            <label id="tipoIP">Tipo</label>
+            <label id="binaryIp">IP Binario</label>
+
+
+            <form action="">
+                <input type="text" name="ipAdd" id="inputIP" placeholder="Eje:192.168.1.1">
+                <select type="text" name="maskAdd" id="inputMask" >
+                    <option selected="selected">seleccionar</option>
+                    <option>128.0.0.0</option><option>192.0.0.0</option><option>224.0.0.0</option>
+                    <option>240.0.0.0</option><option>248.0.0.0</option><option>252.0.0.0</option>
+                    <option>254.0.0.0</option><option>255.0.0.0</option><option>255.128.0.0</option>
+                    <option>255.192.0.0</option><option>255.224.0.0</option><option>255.240.0.0</option>
+                    <option>255.248.0.0</option><option>255.252.0.0</option><option>255.254.0.0</option>
+                    <option>255.255.0.0</option><option>255.255.128.0</option><option>255.255.192.0</option>
+                    <option>255.255.224.0</option><option>255.255.240.0</option><option>255.255.248.0</option>
+                    <option>255.255.252.0</option><option>255.255.254.0</option><option>255.255.255.0</option>
+                    <option>255.255.255.128</option><option>255.255.255.192</option><option>255.255.255.224</option>
+                    <option>255.255.255.240</option><option>255.255.255.248</option><option>255.255.255.252</option>
+                    <option>255.255.255.254</option><option>255.255.255.255</option>
+                </select>
+                <select id="bitSelector" name="bit">
+                    <option selected="selected">/</option>
+                    <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+                    <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
+                    <option>11</option><option>12</option><option>13</option><option>14</option><option>15</option>
+                    <option>16</option><option>17</option><option>18</option><option>19</option><option>20</option>
+                    <option>21</option><option>22</option><option>23</option><option>24</option><option>25</option>
+                    <option>26</option><option>27</option><option>28</option><option>29</option><option>30</option>
+                    <option>31</option><option>32</option>
+                </select>
+                <button type="button" id="calcular1" >Calcular</button>
+            </form>
+            <div id="calculoHecho"></div>
+
+        </div>
+
+        <div class="card" id="caja2">
+
+            <form action="">
+
+                <div id="resultadoSubredes"></div>
+
+                <label id="TituloSubred">Subred</label>
+                <label id="hostxSubred">#Hosts por Subred</label>
+                <label id="tcantidadSubredes">#Subredes</label>
+                <button id="boto2" type="button">Calcular</button>
+            </form>
+            <div id="calculoSubredHecho"></div>
+        </div>
+
+        <div id="resTable"></div>
+
+        <div id="Integrantes">
+            <label id="tituloIntegrantes">Integrantes</label><br><br>
+            <label id="Cristian1">Cristian Manuel Montoya Zelaya -  20181032517</label><br><br>
+            <label id="Cristian2">Christian Josue Gonzales Espinal - 20141002578</label><br><br>
+            <label id="Carlos">Carlos Josué Castro Torres     -     20171005119</label><br><br>
+            <label id="David">Ángel David Fortín Rodríguez    -     20171001131</label><br><br>
+            <label id="Omar">Omar Enrique Carranza Arambu     -     20171005101</label><br><br>
+            <label id="Roberto"> Roberto Carlor Mas Gálvez    -     20171002097</label><br><br>
+
+        </div>
+</body>
+
+    <script>
+        $('#calcular1').click(function (){
+            var ipAddress = document.getElementById('inputIP').value;
+            var Mask = document.getElementById('inputMask').value;
+            var nBits = document.getElementById('bitSelector').value;
+            var root = "newIP=" + ipAddress + "&newMask=" + Mask + "&newBits=" + nBits;
+
+            $.ajax({
+                    url: '../backend/back.php',
+                    type: 'POST',
+                    data: root
+
+                })
+                    .done(function (res) {
+                        $('#calculoHecho').html(res);
+                    })
+                    .fail(function (){
+                        console.log("error");
+                    })
+                    .always(function (){
+                        console.log("complete");
+                    })
+
+        });
+
+    </script>
+
+    <script>
+        $('#bitSelector').change(function () {
+            document.getElementById('inputMask').selectedIndex=document.getElementById('bitSelector').selectedIndex;
+           var disMask=document.getElementById('bitSelector').value;
+           var val="diMask="+disMask;
+            $.ajax({
+                url: '../backend/backSubred.php',
+                type: 'POST',
+                data: val
+
+            })
+                .done(function (r) {
+                    $('#resultadoSubredes').html(r);
+                })
+                .fail(function (){
+                    console.log("error");
+                })
+                .always(function (){
+                    console.log("complete");
+                })
+        });
+    </script>
+
+    <script>
+    $('#inputMask').change(function () {
+        document.getElementById('bitSelector').selectedIndex=document.getElementById('inputMask').selectedIndex;
+        var disMask=document.getElementById('bitSelector').value;
+        var val="diMask="+disMask;
+        $.ajax({
+            url: '../backend/backSubred.php',
+            type: 'POST',
+            data: val
+
+        })
+            .done(function (r) {
+                $('#resultadoSubredes').html(r);
+            })
+            .fail(function (){
+                console.log("error");
+            })
+            .always(function (){
+                console.log("complete");
+            })
+    });
+</script>
+
+    <script>
+        $('#boto2').click(function (){
+            var subMask=document.getElementById('chooseMaskSubred').value;
+            var red=document.getElementById('inputIP').value;
+            var mascararRef=document.getElementById('bitSelector').value;
+            var val="suMask="+subMask+"&redA="+red+"&mRef="+mascararRef;
+
+            $.ajax({
+                url: '../backend/calcularSubred.php',
+                type: 'POST',
+                data: val
+
+            })
+                .done(function (r) {
+                    $('#calculoSubredHecho').html(r);
+                })
+                .fail(function (){
+                    console.log("error");
+                })
+                .always(function (){
+                    console.log("complete");
+                })
+
+
+
+
+
+
+        });
+
+    </script>
+
+    <script>
+    $('#boto2').click(function (){
+        var subMask=document.getElementById('chooseMaskSubred').value;
+        var red=document.getElementById('inputIP').value;
+        var mascararRef=document.getElementById('bitSelector').value;
+        var val="suMask="+subMask+"&redA="+red+"&mRef="+mascararRef;
+
+        $.ajax({
+            url: '../backend/backTable.php',
+            type: 'POST',
+            data: val
+
+        })
+            .done(function (r) {
+                $('#resTable').html(r);
+            })
+            .fail(function (){
+                console.log("error");
+            })
+            .always(function (){
+                console.log("complete");
+            })
+
+
+
+
+
+
+    });
+
+</script>
+
+</html>
+
+
